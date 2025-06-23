@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统韧性评测论文总结</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+        
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --accent: #3b82f6;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            overflow: hidden;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        #slides-container {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100vh;
+        }
+        
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            background: var(--bg-secondary);
+        }
+        
+        .slide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .slide-content {
+            padding: 2rem;
+            padding-bottom: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+
+        .nav-overlay {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to top, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+            z-index: 40;
+        }
+
+        #page-indicator,
+        #homeButton {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .slide.active .slide-content {
+            opacity: 1;
+        }
+        
+        .math-block {
+            overflow-x: auto;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .katex { font-size: 1.1em; }
+        .katex-display { overflow-x: auto; overflow-y: hidden; }
+        
+        .nav-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            padding: 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 50;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-btn:hover {
+            background: rgba(37, 99, 235, 0.2);
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        #prev-btn {
+            left: 2rem;
+        }
+        
+        #next-btn {
+            right: 2rem;
+        }
+        
+        .page-indicator {
+            position: fixed;
+            bottom: 1rem;
+            right: 2rem;
+            transform: none;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            z-index: 50;
+            backdrop-filter: blur(4px);
+        }
+        
+        .paper-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .paper-title a, .paper-subtitle a {
+            color: inherit;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .paper-title a:hover, .paper-subtitle a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+        
+        .paper-subtitle {
+            font-size: 1.25rem;
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .content-card h3 {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .content-card h4 {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .grid-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 侧边栏样式 */
+        #sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem 1rem;
+            overflow-y: auto;
+        }
+
+        #sidebar-trigger {
+            position: fixed;
+            left: 0;
+            top: 5%;
+            transform: translateY(-50%);
+            width: 20px;  /* 减小宽度 */
+            height: 80px;  /* 增加高度 */
+            z-index: 99;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            backdrop-filter: blur(8px);
+            padding: 8px 0;
+        }
+
+        #sidebar-trigger:hover {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.08);
+            width: 22px;
+        }
+
+        #sidebar-trigger::after {
+            display: none;
+        }
+
+        #sidebar-trigger svg {
+            color: #2563eb;
+            opacity: 0.75;
+            transition: all 0.3s ease;
+        }
+
+        #sidebar-trigger:hover svg {
+            opacity: 1;
+            color: #1d4ed8;
+        }
+
+        #sidebar.active {
+            transform: translateX(300px);
+        }
+
+        .sidebar-item {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .sidebar-item:hover {
+            background: var(--bg-secondary);
+            color: var(--primary);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid var(--bg-secondary);
+        }
+
+        .sidebar-home {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .sidebar-home:hover {
+            background: var(--bg-secondary);
+        }
+
+        .sidebar-home svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        /* 导航提示样式 */
+        #nav-hint {
+            display: none;
+        }
+
+        #nav-hint.hidden {
+            display: none;
+        }
+
+        #sidebar.active + #nav-hint {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="1"/>
+            <circle cx="12" cy="5" r="1"/>
+            <circle cx="12" cy="19" r="1"/>
+        </svg>
+    </div>
+    <div id="sidebar">
+        <div class="sidebar-title">论文导航</div>
+        <div class="sidebar-home" data-slide="0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            返回首页
+        </div>
+        <div class="sidebar-item" data-slide="1">论文1：事务系统的韧性基准 - 可选指标的实验研究</div>
+        <div class="sidebar-item" data-slide="3">论文2：SCoRe - 计算机系统韧性基准测试的全面指标</div>
+        <div class="sidebar-item" data-slide="5">论文3：OLTP应用程序环境的可靠性基准</div>
+        <div class="sidebar-item" data-slide="6">论文4：基于性能的系统韧性定量评估框架</div>
+        <div class="sidebar-item" data-slide="8">论文5：网络化指挥信息系统韧性度量与优化研究</div>
+    </div>
+    <div class="nav-overlay"></div>
+    <button id="prev-btn" class="nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
+    
+    <button id="next-btn" class="nav-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+    </button>
+    
+    <div id="page-indicator" class="fixed bottom-4 right-4 px-4 py-2 rounded-full bg-black bg-opacity-20 backdrop-blur-sm text-white text-sm z-50">
+        <span id="currentPage">1</span> / <span id="totalPages">1</span>
+    </div>
+    
+    <div id="homeButton" class="fixed bottom-4 left-4 px-4 py-2 rounded-full bg-black bg-opacity-20 backdrop-blur-sm text-white text-sm cursor-pointer hover:bg-opacity-30 transition-all duration-300 z-50" style="display: none;">
+        回到首页
+    </div>
+    
+    <div id="slides-container">
+        <!-- 首页 -->
+        <section class="slide bg-gradient-to-br from-blue-50 to-indigo-50">
+            <div class="slide-content flex flex-col items-center justify-center min-h-screen">
+                <div class="text-center space-y-8">
+                    <h1 class="text-5xl font-bold text-gray-800 mb-6 animate-fade-in">
+                        韧性评测指标与框架
+                    </h1>
+                    
+                    <div class="flex items-center justify-center space-x-4 mb-12">
+                        <div class="h-[2px] w-12 bg-indigo-500"></div>
+                        <h2 class="text-2xl text-gray-600">数据库韧性评测基准度量研究与规划</h2>
+                        <div class="h-[2px] w-12 bg-indigo-500"></div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                            </svg>
+                            <p class="text-xl text-gray-700">制作人：李天杰</p>
+                        </div>
+                        
+                        <div class="flex items-center justify-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                            </svg>
+                            <p class="text-gray-500">2025年6月</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-16 grid grid-cols-1 gap-8 text-center">
+                        <div class="p-4 rounded-lg bg-white shadow-sm w-64 mx-auto">
+                            <p class="text-lg font-semibold text-gray-800">5篇</p>
+                            <p class="text-sm text-gray-500">论文总结</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 text-gray-500 text-sm animate-bounce">
+                        向右滑动开始阅读 →
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 论文1 第1页 -->
+        <section class="slide">
+            <div class="slide-content">
+                <div class="paper-title">
+                    <a href="https://ieeexplore.ieee.org/abstract/document/7920595" target="_blank" title="点击跳转到论文原文">
+                        事务系统的韧性基准：可选指标的实验研究
+                    </a>
+                </div>
+                <div class="paper-subtitle">
+                    <a href="https://ieeexplore.ieee.org/abstract/document/7920595" target="_blank" title="点击跳转到论文原文">
+                        Resilience Benchmarking of Transactional Systems: Experimental Study of Alternative Metrics
+                    </a>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">研究概述</h3>
+                    <p class="text-gray-700 mb-4">
+                        本研究提出了一种完整的韧性基准测试框架，通过实验对比了三种不同的韧性量化指标（TPS、Resilience Area、SCoRe）。评估关注两个基本方面：服务的持续性和服务质量。
+                    </p>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">框架组成</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="grid-item">
+                            <h4 class="mb-2">Workload（工作负载）</h4>
+                            <p class="text-gray-700">在动态变化环境中评测系统韧性，包含服务请求的定性和定量变化。传统性能基准测试关注静态环境下的性能，而本框架强调在动态变化环境中的评测。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">Changeload（变化负载）</h4>
+                            <p class="text-gray-700">模拟真实环境中的扰动，如CPU占用、内存不足、I/O竞争等。这些变化负载用于测试系统在压力下的适应能力。文中所用的变化负载见下表：</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-center mt-4">
+                        <img src="assets/1.png" alt="Framework Components" class="w-1/2 mx-auto">
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">测试流程</h3>
+                    <div class="flex justify-center mb-4">
+                        <img src="assets/2.png" alt="Testing Process" class="w-3/4 mx-auto">
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="grid-item">
+                            <h4 class="mb-2">基线阶段</h4>
+                            <p class="text-gray-700">系统在稳定状态下运行，记录基准性能，确定系统在正常条件下的性能基准线。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">变化阶段</h4>
+                            <p class="text-gray-700">注入变化负载，监测性能指标波动。在此阶段观察系统对外部压力的即时反应。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">恢复阶段</h4>
+                            <p class="text-gray-700">停止变化，观察系统恢复情况。这个阶段评估系统的自愈能力和恢复速度。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 论文1 第2页 -->
+        <section class="slide">
+            <div class="slide-content">
+                <div class="paper-title">
+                    <a href="https://ieeexplore.ieee.org/abstract/document/7920595" target="_blank">
+                        事务系统的韧性基准：可选指标的实验研究
+                    </a>
+                </div>
+                <div class="paper-subtitle">
+                    <a href="https://ieeexplore.ieee.org/abstract/document/7920595" target="_blank" title="点击跳转到论文原文">
+                        Resilience Benchmarking of Transactional Systems: Experimental Study of Alternative Metrics
+                    </a>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">韧性量化指标</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="grid-item">
+                            <h4 class="mb-2">性能损失（Δtps）</h4>
+                            <p class="text-gray-700">对比变化期间与基线的TPS下降百分比，直观反映系统性能损失程度。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">韧性面积（RA）</h4>
+                            <p class="text-gray-700">计算TPS时间曲线下陷区域的面积，量化累积性能损失。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">SCoRe指标</h4>
+                            <p class="text-gray-700">综合"有效工作量"与"损失工作量"的比值，提供统一的韧性评分。</p>
+                        </div>
+                    </div>
+                    <div class="math-block mt-4">
+                        $$ SCoRe = \frac{\text{有效工作量 (A1)}}{\text{损失工作量 (A2)}} $$
+                    </div>
+                    <div class="flex justify-center mt-4">
+                        <img src="assets/3.png" alt="Metrics Visualization" class="w-2/3 mx-auto">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 论文2 第1页 -->
+        <section class="slide">
+            <div class="slide-content">
+                <div class="paper-title">
+                    <a href="https://ieeexplore.ieee.org/document/6615542" target="_blank" title="点击跳转到论文原文">
+                        SCoRe：计算机系统韧性基准测试的全面指标
+                    </a>
+                </div>
+                <div class="paper-subtitle">
+                    <a href="https://ieeexplore.ieee.org/document/6615542" target="_blank" title="点击跳转到论文原文">
+                        SCoRe: An Across-the-Board Metric for Computer Systems Resilience Benchmarking
+                    </a>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">理论基础</h3>
+                    <p class="text-gray-700 mb-4">
+                        该指标通过类比材料科学中的"应力-应变"曲线提出。在经典力学中，韧性定义为材料在受到压力变形（无永久损伤）时吸收能量的能力，通过应力-应变曲线下的面积进行量化。
+                    </p>
+                    <div class="flex justify-center">
+                        <img src="assets/4.png" alt="Stress-Strain Model">
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">SCoRe指标定义</h3>
+                    <div class="math-block">
+                        $$ SCoRe = \frac{W_{\text{useful}}}{W_{\text{lost}}} $$
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="assets/5.png" alt="SCoRe Metric" class="w-1/2 mx-auto">
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div class="grid-item">
+                            <h4 class="mb-2">$W_{\text{lost}}$（损失工作量）</h4>
+                            <p class="text-gray-700">曲线上方与纵轴围成的面积，代表系统因压力导致的潜在服务质量损失。这个值越小表示系统抗压能力越强。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">$W_{\text{useful}}$（有效工作量）</h4>
+                            <p class="text-gray-700">曲线下方与横轴围成的面积，反映系统在压力下实际维持的有效服务能力。这个值越大表示系统维持服务能力越强。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 论文2 第2页 -->
+        <section class="slide">
+            <div class="slide-content">
+                <div class="paper-title">
+                    <a href="https://ieeexplore.ieee.org/document/6615542" target="_blank">
+                        SCoRe：计算机系统韧性基准测试的全面指标
+                    </a>
+                </div>
+                <div class="paper-subtitle">
+                    <a href="https://ieeexplore.ieee.org/document/6615542" target="_blank" title="点击跳转到论文原文">
+                        SCoRe: An Across-the-Board Metric for Computer Systems Resilience Benchmarking
+                    </a>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">指标对比</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="grid-item">
+                            <h4 class="mb-2">韧性区域</h4>
+                            <p class="text-gray-700">与感受到的影响（吞吐量损失）和恢复时间成正比，但受到变更影响前系统性能的影响。这种方法可能无法准确反映系统的相对恢复能力。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">修正韧性指标SCoRe</h4>
+                            <p class="text-gray-700">考虑了系统在受到压力前后的相对变化，更准确地反映出压力事件影响中系统的恢复和适应的相对能力。</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="assets/6.png" alt="Metrics Comparison" class="w-3/4">
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">未来发展方向</h3>
+                    <p class="text-gray-700 mb-4">
+                        可将系统的多个韧性指标量化为不同的SCoRe值，并使用SCoRe的雷达图直观反映出系统在多个不同韧性指标下的表现情况。这种多维度的评估方法能够更全面地展示系统的韧性特征。
+                    </p>
+                    <div class="flex justify-center">
+                        <img src="assets/7.png" alt="Future Development">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 论文3 第1页 -->
+        <section class="slide">
+            <div class="slide-content">
+                <div class="paper-title">
+                    <a href="https://dl.acm.org/doi/pdf/10.5555/1315451.1315515" target="_blank" title="点击跳转到论文原文">
+                        OLTP应用程序环境的可靠性基准
+                    </a>
+                </div>
+                <div class="paper-subtitle">
+                    <a href="https://dl.acm.org/doi/pdf/10.5555/1315451.1315515" target="_blank" title="点击跳转到论文原文">
+                        A Dependability Benchmark for OLTP Application Environments
+                    </a>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">基准测试框架</h3>
+                    <p class="text-gray-700 mb-4">
+                        DBench OLTP可靠性基准在TPC-C的基础上进行了扩展，保留了其基本设置、工作负载和性能度量，同时引入了新的测试组件和评估维度。这种方法确保了与现有基准的兼容性，同时增加了可靠性评估的深度。
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="flex justify-center items-center">
+                            <img src="assets/8.png" alt="Framework Overview" class="w-full">
+                        </div>
+                        <div class="flex justify-center items-center">
+                            <img src="assets/9.png" alt="Framework Components">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">故障类型与度量指标</h3>
+                    <p class="text-gray-700 mb-4">
+                        由于软件故障的构造和复现难度较大，初始的可靠性基准测试方案主要关注操作员故障。该方案定义了清晰的故障语义，为后续研究提供了基础框架，但具体实现方式可根据实际需求进行定制。
+                    </p>
+                    <div class="flex justify-center">
+                        <img src="assets/10.png" alt="Fault Types" class="w-4/5">
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4 mt-4">
+                        <div class="grid-item">
+                            <h4 class="mb-2">数据错误数（NE）</h4>
+                            <p class="text-gray-700">一致性测试和元数据测试检测到的数据错误数量，直接反映系统的数据完整性和一致性保障能力。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">终端可用性（AvtS）</h4>
+                            <p class="text-gray-700">在第2阶段存在故障负载的情况下，从被测系统的角度来看可用性（可用时间）。当系统能够定义的最小响应时间内对至少一个终端做出响应时，该系统可用。当系统无法对任何终端做出响应的时候，该系统不可用。 </p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">用户可用性（AvtC）</h4>
+                            <p class="text-gray-700">在第2阶段出现故障负载的情况下，客户端的可用性（可用时间）。如果一个终端在定义的最小响应时间内对提交的事务做出响应，则该系统可用于该终端。若该时间内没有响应或返回错误，则该终端无法使用该系统。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 论文4 第1页 -->
+        <section class="slide">
+            <div class="slide-content">
+                <div class="paper-title">
+                    <a href="https://www.sciencedirect.com/science/article/pii/S0951832016306597" target="_blank" title="点击跳转到论文原文">
+                        基于性能的系统韧性定量评估框架
+                    </a>
+                </div>
+                <div class="paper-subtitle">
+                    <a href="https://www.sciencedirect.com/science/article/pii/S0951832016306597" target="_blank" title="点击跳转到论文原文">
+                        A framework for the quantitative assessment of performance-based system resilience
+                    </a>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">韧性系数 R</h3>
+                    <div class="flex justify-center mb-6">
+                        <div class="w-4/5">
+                            <div class="math-block">
+                                $$ R = \begin{cases} 
+                                \sigma \rho [\delta + \zeta + 1 - \tau^{(\rho-\delta)}] & \text{ if } \rho - \delta \geq 0 \\
+                                \sigma \rho (\delta + \zeta) & \text{ otherwise }
+                                \end{cases} $$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center mb-6">
+                        <img src="assets/11.png" alt="Resilience Factors Illustration" class="w-1/2">
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="grid-item">
+                            <h4 class="mb-2">σ：总性能因子</h4>
+                            <p class="text-gray-700">衡量系统在干扰全周期内的累计性能维持能力，反映整体性能损耗程度：</p>
+                            <div class="math-block mt-2">
+                                $$ \sigma = \frac{\sum_{t=t_0}^{t_{\text{final}}} y(t)}{y_D (t_{\text{final}} - t_0)} $$
+                            </div>
+                            <p class="text-gray-700 mt-2">通过实际性能与理想性能的时间积分比值计算：无干扰时 σ = 1，性能损耗越大，σ 越小。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">ρ：恢复因子</h4>
+                            <p class="text-gray-700">表征系统干扰后的稳态恢复水平，通过恢复后性能与期望性能的比值计算：</p>
+                            <div class="math-block mt-2">
+                                $$ \rho = \frac{y_R}{y_D} $$
+                            </div>
+                            <p class="text-gray-700 mt-2">ρ = 1 表示完全恢复，ρ > 1 表示恢复后性能超越预期。其中 $y_R$ 通过边际标准误差规则（MSER）确定。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">δ：吸收因子</h4>
+                            <p class="text-gray-700">量化系统对干扰的抵抗与缓冲能力，通过最小性能与期望性能的比值计算：</p>
+                            <div class="math-block mt-2">
+                                $$ \delta = \frac{y_{\text{min}}}{y_D} $$
+                            </div>
+                            <p class="text-gray-700 mt-2">δ 越小表示性能暴跌越严重，δ > 1 表示系统性能未受干扰影响（甚至高于预期）。</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="grid-item">
+                            <h4 class="mb-2">ζ：波动因子</h4>
+                            <p class="text-gray-700">刻画系统性能数据的稳定性，基于信噪比（SNR）计算：</p>
+                            <div class="math-block mt-2">
+                                $$ \text{SNR}_{dB} = 10 \log_{10} \frac{P_s}{P_n} $$
+                                $$ P_s = \sum y(t)^2, \quad P_n = \sum (y_{\text{raw}}(t) - y(t))^2 $$
+                                $$ \zeta = \frac{1}{1 + \exp[-0.25(\text{SNR}_{dB} - 15)]} $$
+                            </div>
+                            <p class="text-gray-700 mt-2">0 ≤ ζ ≤ 1，性能波动越小，ζ 越接近1。通过原始性能数据与平滑数据的差异评估波动程度。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">τ：归一化恢复时间因子</h4>
+                            <p class="text-gray-700">量化系统从干扰中恢复至稳态的时间效率：</p>
+                            <div class="math-block mt-2">
+                                $$ \tau = \frac{d^*}{n} $$
+                            </div>
+                            <p class="text-gray-700 mt-2">d* 为通过MSER方法确定的稳态恢复时间点，n为总时间步长。0 ≤ τ ≤ 1，τ 越小表示恢复速度越快，无干扰时 τ = 0。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 论文4 第2页 -->
+        <section class="slide">
+            <div class="slide-content">
+                <div class="paper-title">
+                    <a href="https://www.sciencedirect.com/science/article/pii/S0951832016306597" target="_blank">
+                        基于性能的系统韧性定量评估框架
+                    </a>
+                </div>
+                <div class="paper-subtitle">
+                    <a href="https://www.sciencedirect.com/science/article/pii/S0951832016306597" target="_blank" title="点击跳转到论文原文">
+                        A framework for the quantitative assessment of performance-based system resilience
+                    </a>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">总韧性</h3>
+                    <div class="math-block">
+                        $$ R_{\text{total}} = \sum_{i=1}^{N_{\text{epochs}}} w_i R_i $$
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="grid-item">
+                            <h4 class="mb-2">参数说明</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li><strong>$N_{\text{epochs}}$</strong>: 干扰事件总时间段数，每个epoch包含完整的干扰-恢复过程</li>
+                                <li><strong>$w_i$</strong>: 基于EWMA的权重系数，反映不同时期干扰的重要性</li>
+                                <li><strong>$R_i$</strong>: 各时段的韧性系数，综合反映该时段的系统表现</li>
+                            </ul>
+                        </div>
+                        <div class="flex justify-center items-center">
+                            <img src="assets/12.png" alt="Total Resilience" class="w-3/4 rounded-lg">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">权重计算</h3>
+                    <div class="math-block">
+                        $$ w_i = \frac{\alpha(1-\alpha)^{N_{\text{epochs}}-i}}{\sum_{j=1}^{N_{\text{epochs}}} \alpha(1-\alpha)^{N_{\text{epochs}}-j}} = \frac{(1-\alpha)^{N_{\text{epochs}}-i}}{\sum_{j=1}^{N_{\text{epochs}}} (1-\alpha)^{N_{\text{epochs}}-j}} $$
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="grid-item">
+                            <h4 class="mb-2">指数衰减机制</h4>
+                            <p class="text-gray-700">公式中$(1-\alpha)^{N_{\text{epochs}}-i}$是权重的核心衰减项，体现时间敏感性：</p>
+                            <ul class="space-y-2 text-gray-700 mt-2">
+                                <li>当$i = N_{\text{epochs}}$（最后一个epoch），指数为0，权重为$(1-\alpha)^0 = 1$（基准值）</li>
+                                <li>当$i = N_{\text{epochs}}-1$，权重为$(1-\alpha)^1$，是最后一个epoch权重的$(1-\alpha)$倍</li>
+                                <li>第1个epoch的权重为$(1-\alpha)^{N_{\text{epochs}}-1}$，随$N_{\text{epochs}}$增加呈指数级衰减</li>
+                            </ul>
+                            <p class="text-gray-700 mt-2">示例：若$\alpha = 0.5$，$N_{\text{epochs}} = 3$，则$w_1 : w_2 : w_3 = 1 : 2 : 4$，即近期epoch权重是早期的4倍。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">平滑因子α的调节</h4>
+                            <p class="text-gray-700">α直接控制权重衰减速度，决定指标对"最新干扰"的敏感程度：</p>
+                            <ul class="space-y-2 text-gray-700 mt-2">
+                                <li><strong>α→1</strong>：权重快速衰减，仅最新干扰主导指标（适用于高频变化系统，如实时通信网络）</li>
+                                <li><strong>α→0</strong>：权重趋于均匀分布，指标反映长期平均韧性（适用于稳态系统，如传统电力网络）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 论文5 第1页 -->
+        <section class="slide">
+            <div class="slide-content">
+                <div class="paper-title">
+                    <a href="https://www.sciencedirect.com/science/article/pii/S0951832025002492" target="_blank">
+                        网络化指挥信息系统韧性度量与优化研究
+                    </a>
+                </div>
+                <div class="paper-subtitle">
+                    <a href="https://www.sciencedirect.com/science/article/pii/S0951832025002492" target="_blank" title="点击跳转到论文原文">
+                        Research on resilience measurement and optimization of networked command information system
+                    </a>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">韧性度量要素</h3>
+                    <p class="text-gray-700 mb-4">
+                        系统韧性分析的目的是刻画系统从扰动发生到功能恢复的全过程，并对有效反映韧性的内部要素进行定性或定量描述。韧性度量值 $ F_{\text{agili}} $ 可独立表征为三个核心要素：
+                    </p>
+                    <div class="math-block mb-4">
+                        $$ F_{\text{agili}} = \langle F_{\text{robus}}, F_{\text{adapt}}, F_{\text{respo}} \rangle $$
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="grid-item">
+                            <h4 class="mb-2">鲁棒性 (Robustness)</h4>
+                            <p class="text-gray-700">强调系统在压力或干扰下的稳定性与抗干扰性，确保核心功能的持续运行。通过损伤率和损失持续时间来量化。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">恢复力 (Recoverability)</h4>
+                            <p class="text-gray-700">系统从破坏、中断或灾难环境中改变并恢复的能力，体现自愈特性。通过恢复率和恢复时间率来衡量。</p>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">响应性 (Responsiveness)</h4>
+                            <p class="text-gray-700">识别变化的任务和环境并快速做出反应的能力，反映适应性。主要通过响应持续时间比来评估。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <h3 class="text-xl mb-4">时间参数定义</h3>
+                    <div class="flex justify-center mb-6">
+                        <img src="assets/13.png" alt="Parameter Indicators" class="w-4/5">
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="grid-item">
+                            <h4 class="mb-2">关键时间点</h4>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li><strong>$t_s$</strong>：系统开始受到干扰的时间点</li>
+                                <li><strong>$t_a$</strong>：系统性能达到最低点的时间点</li>
+                                <li><strong>$t_r$</strong>：系统开始恢复的时间点</li>
+                                <li><strong>$t_f$</strong>：系统完成恢复的时间点</li>
+                            </ul>
+                        </div>
+                        <div class="grid-item">
+                            <h4 class="mb-2">性能变化</h4>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li><strong>$X(t_s)$</strong>：初始性能水平</li>
+                                <li><strong>$X(t_a)$</strong>：最低性能水平</li>
+                                <li><strong>$X(t_r)$</strong>：开始恢复时的性能水平</li>
+                                <li><strong>$X(t_f)$</strong>：最终恢复的性能水平</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 论文5 第2页 -->
+        <section class="slide">
+            <div class="slide-content">
+                <div class="paper-title">
+                    <a href="https://www.sciencedirect.com/science/article/pii/S0951832025002492" target="_blank">
+                        网络化指挥信息系统韧性度量与优化研究
+                    </a>
+                </div>
+                <div class="paper-subtitle">
+                    <a href="https://www.sciencedirect.com/science/article/pii/S0951832025002492" target="_blank" title="点击跳转到论文原文">
+                        Research on resilience measurement and optimization of networked command information system
+                    </a>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="content-card">
+                        <h3 class="text-xl mb-4">鲁棒性度量 ($ F_{\text{robus}} $)</h3>
+                        <div class="math-block mb-4">
+                            $$ F_{\text{robus}} = f\left(\frac{SP_{\text{robus}}^{\text{aft}}}{SP_{\text{robus}}^{\text{bef}}}, DV\right) = \frac{1}{DR \cdot DV} $$
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="mb-2">损伤率 (DR)</h4>
+                                <div class="math-block mb-2">
+                                    $$ DR = \frac{X(t_s) - X(t_a)}{X(t_s)} $$
+                                </div>
+                                <p class="text-gray-700">表示系统在干扰下性能下降的程度，DR越小表示系统抗干扰能力越强。</p>
+                            </div>
+                            <div>
+                                <h4 class="mb-2">损失持续时间比 (DV)</h4>
+                                <div class="math-block mb-2">
+                                    $$ DV = \frac{t_a - t_s}{t_f - t_s} $$
+                                </div>
+                                <p class="text-gray-700">反映系统从开始受到干扰到达到最低性能点所需时间占总恢复周期的比例。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <h3 class="text-xl mb-4">恢复力度量 ($ F_{\text{adapt}} $)</h3>
+                        <div class="math-block mb-4">
+                            $$ F_{\text{adapt}} = g\left(\frac{SP_{\text{adapt}}^{\text{aft}}}{SP_{\text{adapt}}^{\text{bef}}}, RV\right) = \frac{RR}{RV} $$
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="mb-2">恢复率 (RR)</h4>
+                                <div class="math-block mb-2">
+                                    $$ RR = \frac{X(t_f) - X(t_r)}{X(t_s)} $$
+                                </div>
+                                <p class="text-gray-700">表示系统恢复能力的大小，RR越大表示系统恢复程度越好。</p>
+                            </div>
+                            <div>
+                                <h4 class="mb-2">恢复时间率 (RV)</h4>
+                                <div class="math-block mb-2">
+                                    $$ RV = \frac{t_f - t_r}{t_f - t_s} $$
+                                </div>
+                                <p class="text-gray-700">反映系统恢复过程所需时间占总恢复周期的比例。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mt-6">
+                    <div class="content-card">
+                        <h3 class="text-xl mb-4">响应性度量 ($ F_{\text{respo}} $)</h3>
+                        <div class="math-block mb-4">
+                            $$ F_{\text{respo}} = h(AV) = \frac{1}{AV} $$
+                        </div>
+                        <div>
+                            <h4 class="mb-2">响应持续时间比 (AV)</h4>
+                            <div class="math-block mb-2">
+                                $$ AV = \frac{t_r - t_a}{t_f - t_s} $$
+                            </div>
+                            <p class="text-gray-700">反映系统从性能最低点到开始恢复所需时间占总恢复周期的比例。AV越小表示系统响应速度越快。</p>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <h3 class="text-xl mb-4">总体韧性评估 ($ F_{\text{agili}} $)</h3>
+                        <div class="math-block mb-4">
+                            $$ F_{\text{agili}} = F_{\text{robus}} \cdot F_{\text{adapt}} \cdot F_{\text{respo}} $$
+                        </div>
+                        <p class="text-gray-700">通过三个维度的乘积来综合评估系统的整体韧性水平，体现了系统韧性的整体性和各维度的相互依赖关系。每个维度都是系统韧性不可或缺的组成部分，共同决定了系统的整体韧性表现。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize KaTeX
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+
+            const slidesContainer = document.getElementById('slides-container');
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const currentPageSpan = document.getElementById('currentPage');
+            const totalPagesSpan = document.getElementById('totalPages');
+            const homeButton = document.getElementById('homeButton');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarTrigger = document.getElementById('sidebar-trigger');
+            let currentSlide = 0;
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            // 更新总页数显示
+            totalPagesSpan.textContent = slides.length;
+            
+            // 更新当前页面显示和slide状态
+            function updateSlideStatus() {
+                slides.forEach((slide, index) => {
+                    if (index === currentSlide) {
+                        slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
+                    }
+                });
+                currentPageSpan.textContent = currentSlide + 1;
+                
+                // 显示/隐藏首页按钮
+                if (currentSlide === 0) {
+                    homeButton.style.display = 'none';
+                } else {
+                    homeButton.style.display = 'block';
+                }
+            }
+            
+            // 切换到指定页面
+            function goToSlide(index) {
+                currentSlide = index;
+                slidesContainer.style.transform = `translateX(-${currentSlide * 100}vw)`;
+                updateSlideStatus();
+                
+                // 更新侧边栏选中状态
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    if (parseInt(item.dataset.slide) === currentSlide) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+            
+            // 点击侧边栏触发器显示/隐藏侧边栏
+            sidebarTrigger.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+
+            // 鼠标移出侧边栏时自动关闭
+            sidebar.addEventListener('mouseleave', function() {
+                if (sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // 点击页面内容区域时关闭侧边栏
+            document.addEventListener('click', function(event) {
+                if (!sidebar.contains(event.target) && 
+                    !sidebarTrigger.contains(event.target) && 
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // 为侧边栏项目添加点击事件（包括首页按钮）
+            document.querySelectorAll('.sidebar-item, .sidebar-home').forEach(item => {
+                item.addEventListener('click', function() {
+                    const slideIndex = parseInt(this.dataset.slide);
+                    if (!isNaN(slideIndex)) {
+                        goToSlide(slideIndex);
+                        // 点击后自动关闭侧边栏
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+
+            // 更新当前选中的导航项
+            function updateSidebarActiveItem() {
+                document.querySelectorAll('.sidebar-item, .sidebar-home').forEach(item => {
+                    const slideIndex = parseInt(item.dataset.slide);
+                    if (slideIndex === currentSlide) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+
+            // 在切换页面时更新导航项状态
+            function goToSlide(index) {
+                if (index >= 0 && index < slides.length) {
+                    currentSlide = index;
+                    slidesContainer.style.transform = `translateX(-${currentSlide * 100}vw)`;
+                    updateSlideStatus();
+                    updateSidebarActiveItem(); // 添加这行来更新导航项状态
+                }
+            }
+
+            // Navigation button click handlers
+            prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+            nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+            homeButton.addEventListener('click', () => goToSlide(0));
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    goToSlide(currentSlide + 1);
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    goToSlide(currentSlide - 1);
+                }
+            });
+
+            // Touch events for mobile
+            slidesContainer.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+            });
+
+            slidesContainer.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].clientX;
+                const diff = touchStartX - touchEndX;
+
+                if (Math.abs(diff) > 50) { // Minimum swipe distance
+                    if (diff > 0) {
+                        goToSlide(currentSlide + 1);
+                    } else {
+                        goToSlide(currentSlide - 1);
+                    }
+                }
+            });
+
+            // Initial update
+            updateSlideStatus();
+        });
+    </script>
+</body>
+</html> 

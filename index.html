@@ -103,7 +103,7 @@
         }
         
         .slide-content {
-            padding: 2rem;
+            padding: 1rem;
             padding-bottom: 8rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -132,8 +132,8 @@
         
         .math-block {
             overflow-x: auto;
-            padding: 1rem;
-            margin: 1rem 0;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
             border-radius: 0.5rem;
@@ -216,7 +216,7 @@
         .paper-subtitle {
             font-size: 1.25rem;
             color: var(--secondary);
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             text-align: center;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -224,9 +224,9 @@
         .content-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.3);
             position: relative;
@@ -265,7 +265,7 @@
             max-width: 100%;
             height: auto;
             border-radius: 0.5rem;
-            margin: 1rem 0;
+            margin: 0.5rem 0;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -586,18 +586,11 @@
                 </div>
                 
                 <div class="content-card">
-                    <h3 class="text-xl mb-4">研究概述</h3>
-                    <p class="text-gray-700 mb-4">
-                        本研究提出了一种完整的韧性基准测试框架，通过实验对比了三种不同的韧性量化指标（TPS、Resilience Area、SCoRe）。评估关注两个基本方面：服务的持续性和服务质量。
-                    </p>
-                </div>
-                
-                <div class="content-card">
                     <h3 class="text-xl mb-4">框架组成</h3>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div class="grid-item">
                             <h4 class="mb-2">Workload（工作负载）</h4>
-                            <p class="text-gray-700">在动态变化环境中评测系统韧性，包含服务请求的定性和定量变化。传统性能基准测试关注静态环境下的性能，而本框架强调在动态变化环境中的评测。</p>
+                            <p class="text-gray-700">在动态变化环境中评测系统韧性，传统性能基准测试关注静态环境下的性能，而本框架强调在动态变化环境中的评测。</p>
                         </div>
                         <div class="grid-item">
                             <h4 class="mb-2">Changeload（变化负载）</h4>
@@ -605,7 +598,7 @@
                         </div>
                     </div>
                     <div class="flex justify-center mt-4">
-                        <img src="assets/1.png" alt="Framework Components" class="w-1/2 mx-auto">
+                        <img src="assets/1.png" alt="Framework Components" class="w-2/5 mx-auto">
                     </div>
                 </div>
 
@@ -650,15 +643,15 @@
                     <h3 class="text-xl mb-4">韧性量化指标</h3>
                     <div class="grid md:grid-cols-3 gap-4">
                         <div class="grid-item">
-                            <h4 class="mb-2">性能损失（Δtps）</h4>
+                            <h4 class="mb-2 font-semibold">性能损失（Δtps）</h4>
                             <p class="text-gray-700">对比变化期间与基线的TPS下降百分比，直观反映系统性能损失程度。</p>
                         </div>
                         <div class="grid-item">
-                            <h4 class="mb-2">韧性面积（RA）</h4>
+                            <h4 class="mb-2 font-semibold">韧性面积（RA）</h4>
                             <p class="text-gray-700">计算TPS时间曲线下陷区域的面积，量化累积性能损失。</p>
                         </div>
                         <div class="grid-item">
-                            <h4 class="mb-2">SCoRe指标</h4>
+                            <h4 class="mb-2 font-semibold">SCoRe指标</h4>
                             <p class="text-gray-700">综合"有效工作量"与"损失工作量"的比值，提供统一的韧性评分。</p>
                         </div>
                     </div>
@@ -666,7 +659,7 @@
                         $$ SCoRe = \frac{\text{有效工作量 (A1)}}{\text{损失工作量 (A2)}} $$
                     </div>
                     <div class="flex justify-center mt-4">
-                        <img src="assets/3.png" alt="Metrics Visualization" class="w-2/3 mx-auto">
+                        <img src="assets/3.png" alt="Metrics Visualization" class="w-1/2 mx-auto">
                     </div>
                 </div>
             </div>
@@ -686,32 +679,85 @@
                     </a>
                 </div>
                 
-                <div class="content-card">
-                    <h3 class="text-xl mb-4">理论基础</h3>
-                    <p class="text-gray-700 mb-4">
-                        该指标通过类比材料科学中的"应力-应变"曲线提出。在经典力学中，韧性定义为材料在受到压力变形（无永久损伤）时吸收能量的能力，通过应力-应变曲线下的面积进行量化。
-                    </p>
-                    <div class="flex justify-center">
-                        <img src="assets/4.png" alt="Stress-Strain Model">
+                <!-- 上半部分：理论基础和核心概念 -->
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <!-- 理论基础 - 占用1列 -->
+                    <div class="content-card">
+                        <h3 class="text-xl mb-4 text-center text-blue-600">理论基础</h3>
+                        <p class="text-gray-700 mb-4 text-center">
+                            该指标通过类比材料科学中的"应力-应变"曲线提出
+                        </p>
+                        <div class="flex justify-center mb-4">
+                            <img src="assets/4.png" alt="Stress-Strain Model" class="w-4/5 rounded-lg shadow-lg">
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <p class="text-blue-700 text-sm text-center">
+                                在经典力学中，韧性定义为材料在受到压力变形时吸收能量的能力，通过应力-应变曲线下的面积进行量化
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- SCoRe指标定义 - 占用1列 -->
+                    <div class="content-card">
+                        <h3 class="text-2xl mb-4 text-center text-purple-600">SCoRe指标定义</h3>
+                        <div class="math-block text-center mb-4">
+                            $$ SCoRe = \frac{W_{\text{useful}}}{W_{\text{lost}}} $$
+                        </div>
+                        <div class="flex justify-center">
+                            <img src="assets/5.png" alt="SCoRe Metric" class="w-full rounded-lg shadow-lg">
+                        </div>
                     </div>
                 </div>
                 
-                <div class="content-card">
-                    <h3 class="text-xl mb-4">SCoRe指标定义</h3>
-                    <div class="math-block">
-                        $$ SCoRe = \frac{W_{\text{useful}}}{W_{\text{lost}}} $$
-                    </div>
-                    <div class="flex justify-center">
-                        <img src="assets/5.png" alt="SCoRe Metric" class="w-1/2 mx-auto">
-                    </div>
-                    <div class="grid md:grid-cols-2 gap-4 mt-4">
-                        <div class="grid-item">
-                            <h4 class="mb-2">$W_{\text{lost}}$（损失工作量）</h4>
-                            <p class="text-gray-700">曲线上方与纵轴围成的面积，代表系统因压力导致的潜在服务质量损失。这个值越小表示系统抗压能力越强。</p>
+                <!-- 下半部分：工作量组件详解 -->
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- 损失工作量 -->
+                    <div class="content-card border-l-4 border-red-400">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-red-600 font-bold">W</span>
+                            </div>
+                            <h3 class="text-xl text-red-600">$W_{\text{lost}}$ - 损失工作量</h3>
                         </div>
-                        <div class="grid-item">
-                            <h4 class="mb-2">$W_{\text{useful}}$（有效工作量）</h4>
-                            <p class="text-gray-700">曲线下方与横轴围成的面积，反映系统在压力下实际维持的有效服务能力。这个值越大表示系统维持服务能力越强。</p>
+                        <p class="text-gray-700 mb-4">
+                            曲线上方与纵轴围成的面积，代表系统因压力导致的潜在服务质量损失。
+                        </p>
+                        <div class="bg-red-50 p-4 rounded-lg mb-4">
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                                <span class="text-red-700 font-semibold">性能损失程度指标</span>
+                            </div>
+                            <p class="text-red-600 text-sm mt-2">值越小 → 抗压能力越强</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-red-100 to-red-50 p-3 rounded-lg">
+                            <p class="text-red-800 text-sm font-medium text-center">
+                                反映系统在压力下的脆弱性
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 有效工作量 -->
+                    <div class="content-card border-l-4 border-green-400">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-green-600 font-bold">W</span>
+                            </div>
+                            <h3 class="text-xl text-green-600">$W_{\text{useful}}$ - 有效工作量</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">
+                            曲线下方与横轴围成的面积，反映系统在压力下实际维持的有效服务能力。
+                        </p>
+                        <div class="bg-green-50 p-4 rounded-lg mb-4">
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                                <span class="text-green-700 font-semibold">服务维持能力指标</span>
+                            </div>
+                            <p class="text-green-600 text-sm mt-2">值越大 → 维持服务能力越强</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-100 to-green-50 p-3 rounded-lg">
+                            <p class="text-green-800 text-sm font-medium text-center">
+                                体现系统在压力下的韧性表现
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -733,29 +779,34 @@
                 </div>
                 
                 <div class="content-card">
-                    <h3 class="text-xl mb-4">指标对比</h3>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="grid-item">
-                            <h4 class="mb-2">韧性区域</h4>
-                            <p class="text-gray-700">与感受到的影响（吞吐量损失）和恢复时间成正比，但受到变更影响前系统性能的影响。这种方法可能无法准确反映系统的相对恢复能力。</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- 指标对比 - 占用1列 -->
+                    <div class="content-card">
+                        <h3 class="text-xl mb-4">指标对比</h3>
+                        <div class="space-y-4">
+                            <div class="grid-item">
+                                <h4 class="mb-2 font-semibold">韧性区域</h4>
+                                <p class="text-gray-700">与感受到的影响（吞吐量损失）和恢复时间成正比，但受到变更影响前系统性能的影响。这种方法可能无法准确反映系统的相对恢复能力。</p>
+                            </div>
+                            <div class="grid-item">
+                                <h4 class="mb-2 font-semibold">修正韧性指标SCoRe</h4>
+                                <p class="text-gray-700">考虑了系统在受到压力前后的相对变化，更准确地反映出压力事件影响中系统的恢复和适应的相对能力。</p>
+                            </div>
                         </div>
-                        <div class="grid-item">
-                            <h4 class="mb-2">修正韧性指标SCoRe</h4>
-                            <p class="text-gray-700">考虑了系统在受到压力前后的相对变化，更准确地反映出压力事件影响中系统的恢复和适应的相对能力。</p>
+                        <div class="flex justify-center mt-4">
+                            <img src="assets/6.png" alt="Metrics Comparison" class="w-full">
                         </div>
                     </div>
-                    <div class="flex justify-center">
-                        <img src="assets/6.png" alt="Metrics Comparison" class="w-3/4">
-                    </div>
-                </div>
-                
-                <div class="content-card">
-                    <h3 class="text-xl mb-4">未来发展方向</h3>
-                    <p class="text-gray-700 mb-4">
-                        可将系统的多个韧性指标量化为不同的SCoRe值，并使用SCoRe的雷达图直观反映出系统在多个不同韧性指标下的表现情况。这种多维度的评估方法能够更全面地展示系统的韧性特征。
-                    </p>
-                    <div class="flex justify-center">
-                        <img src="assets/7.png" alt="Future Development">
+                    
+                    <!-- 未来发展方向 - 占用1列 -->
+                    <div class="content-card">
+                        <h3 class="text-xl mb-4">未来发展方向</h3>
+                        <p class="text-gray-700 mb-4">
+                            可将系统的多个韧性指标量化为不同的SCoRe值，并使用SCoRe的雷达图直观反映出系统在多个不同韧性指标下的表现情况。这种多维度的评估方法能够更全面地展示系统的韧性特征。
+                        </p>
+                        <div class="flex justify-center">
+                            <img src="assets/7.png" alt="Future Development" class="w-full">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -775,41 +826,53 @@
                     </a>
                 </div>
                 
-                <div class="content-card">
-                    <h3 class="text-xl mb-4">基准测试框架</h3>
-                    <p class="text-gray-700 mb-4">
+                <!-- 上半部分：基准测试框架 -->
+                <div class="content-card mb-6">
+                    <h3 class="text-xl mb-4 text-center text-blue-600">基准测试框架</h3>
+                    <p class="text-gray-700 mb-6 text-center">
                         DBench OLTP可靠性基准在TPC-C的基础上进行了扩展，保留了其基本设置、工作负载和性能度量，同时引入了新的测试组件和评估维度。这种方法确保了与现有基准的兼容性，同时增加了可靠性评估的深度。
                     </p>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="flex justify-center items-center">
-                            <img src="assets/8.png" alt="Framework Overview" class="w-full">
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="flex flex-col items-center">
+                            <img src="assets/8.png" alt="Framework Overview" class="w-4/5 rounded-lg shadow-lg mb-3">
+                            <h4 class="text-center font-semibold text-gray-700">框架概述</h4>
                         </div>
-                        <div class="flex justify-center items-center">
-                            <img src="assets/9.png" alt="Framework Components">
+                        <div class="flex flex-col items-center">
+                            <img src="assets/9.png" alt="Framework Components" class="w-4/5 rounded-lg shadow-lg mb-3">
+                            <h4 class="text-center font-semibold text-gray-700">组件结构</h4>
                         </div>
                     </div>
                 </div>
                 
-                <div class="content-card">
-                    <h3 class="text-xl mb-4">故障类型与度量指标</h3>
-                    <p class="text-gray-700 mb-4">
-                        由于软件故障的构造和复现难度较大，初始的可靠性基准测试方案主要关注操作员故障。该方案定义了清晰的故障语义，为后续研究提供了基础框架，但具体实现方式可根据实际需求进行定制。
-                    </p>
-                    <div class="flex justify-center">
-                        <img src="assets/10.png" alt="Fault Types" class="w-4/5">
+                <!-- 下半部分：故障类型与度量指标 -->
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- 故障类型图示 -->
+                    <div class="content-card">
+                        <h3 class="text-xl mb-4 text-center text-purple-600">故障类型</h3>
+                        <p class="text-gray-700 mb-6 text-center">
+                            由于软件故障的构造和复现难度较大，初始的可靠性基准测试方案主要关注操作员故障。
+                        </p>
+                        <div class="flex justify-center">
+                            <img src="assets/10.png" alt="Fault Types" class="w-full rounded-lg shadow-lg">
+                        </div>
                     </div>
-                    <div class="grid md:grid-cols-3 gap-4 mt-4">
-                        <div class="grid-item">
-                            <h4 class="mb-2">数据错误数（NE）</h4>
-                            <p class="text-gray-700">一致性测试和元数据测试检测到的数据错误数量，直接反映系统的数据完整性和一致性保障能力。</p>
-                        </div>
-                        <div class="grid-item">
-                            <h4 class="mb-2">终端可用性（AvtS）</h4>
-                            <p class="text-gray-700">在第2阶段存在故障负载的情况下，从被测系统的角度来看可用性（可用时间）。当系统能够定义的最小响应时间内对至少一个终端做出响应时，该系统可用。当系统无法对任何终端做出响应的时候，该系统不可用。 </p>
-                        </div>
-                        <div class="grid-item">
-                            <h4 class="mb-2">用户可用性（AvtC）</h4>
-                            <p class="text-gray-700">在第2阶段出现故障负载的情况下，客户端的可用性（可用时间）。如果一个终端在定义的最小响应时间内对提交的事务做出响应，则该系统可用于该终端。若该时间内没有响应或返回错误，则该终端无法使用该系统。</p>
+                    
+                    <!-- 度量指标详解 -->
+                    <div class="content-card">
+                        <h3 class="text-xl mb-4 text-center text-green-600">度量指标</h3>
+                        <div class="space-y-6">
+                            <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                                <h4 class="mb-2 font-semibold text-blue-700">数据错误数（NE）</h4>
+                                <p class="text-gray-700 text-sm">一致性测试和元数据测试检测到的数据错误数量，直接反映系统的数据完整性和一致性保障能力。</p>
+                            </div>
+                            <div class="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-400">
+                                <h4 class="mb-2 font-semibold text-orange-700">终端可用性（AvtS）</h4>
+                                <p class="text-gray-700 text-sm">在第2阶段存在故障负载的情况下，从被测系统的角度来看可用性（可用时间）。当系统能够定义的最小响应时间内对至少一个终端做出响应时，该系统可用。</p>
+                            </div>
+                            <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-400">
+                                <h4 class="mb-2 font-semibold text-green-700">用户可用性（AvtC）</h4>
+                                <p class="text-gray-700 text-sm">在第2阶段出现故障负载的情况下，客户端的可用性（可用时间）。如果一个终端在定义的最小响应时间内对提交的事务做出响应，则该系统可用于该终端。</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -832,7 +895,7 @@
                 
                 <div class="content-card">
                     <h3 class="text-xl mb-4">韧性系数 R</h3>
-                    <div class="flex justify-center mb-6">
+                    <div class="flex justify-center mb-1">
                         <div class="w-4/5">
                             <div class="math-block">
                                 $$ R = \begin{cases} 
@@ -842,10 +905,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex justify-center mb-6">
-                        <img src="assets/11.png" alt="Resilience Factors Illustration" class="w-1/2">
+                    <div class="flex justify-center mb-1">
+                        <img src="assets/11.png" alt="Resilience Factors Illustration" class="w-[30%]">
                     </div>
-                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div class="grid md:grid-cols-3 gap-6 mb-4">
                         <div class="grid-item">
                             <h4 class="mb-2">σ：总性能因子</h4>
                             <p class="text-gray-700">衡量系统在干扰全周期内的累计性能维持能力，反映整体性能损耗程度：</p>
@@ -860,7 +923,7 @@
                             <div class="math-block mt-2">
                                 $$ \rho = \frac{y_R}{y_D} $$
                             </div>
-                            <p class="text-gray-700 mt-2">ρ = 1 表示完全恢复，ρ > 1 表示恢复后性能超越预期。其中 $y_R$ 通过边际标准误差规则（MSER）确定。</p>
+                            <p class="text-gray-700 mt-2">ρ = 1 表示完全恢复，ρ > 1 表示恢复后性能超越预期。其中 $y_R$ 通过MSER确定。</p>
                         </div>
                         <div class="grid-item">
                             <h4 class="mb-2">δ：吸收因子</h4>
@@ -871,18 +934,17 @@
                             <p class="text-gray-700 mt-2">δ 越小表示性能暴跌越严重，δ > 1 表示系统性能未受干扰影响（甚至高于预期）。</p>
                         </div>
                     </div>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="grid-item">
+                    <div class="grid grid-cols-5 gap-6">
+                        <div class="col-span-3 grid-item">
                             <h4 class="mb-2">ζ：波动因子</h4>
                             <p class="text-gray-700">刻画系统性能数据的稳定性，基于信噪比（SNR）计算：</p>
                             <div class="math-block mt-2">
-                                $$ \text{SNR}_{dB} = 10 \log_{10} \frac{P_s}{P_n} $$
-                                $$ P_s = \sum y(t)^2, \quad P_n = \sum (y_{\text{raw}}(t) - y(t))^2 $$
+                                $$ \text{SNR}_{dB} = 10 \log_{10} \frac{P_s}{P_n}, \quad P_s = \sum y(t)^2, \quad P_n = \sum (y_{\text{raw}}(t) - y(t))^2 $$
                                 $$ \zeta = \frac{1}{1 + \exp[-0.25(\text{SNR}_{dB} - 15)]} $$
                             </div>
-                            <p class="text-gray-700 mt-2">0 ≤ ζ ≤ 1，性能波动越小，ζ 越接近1。通过原始性能数据与平滑数据的差异评估波动程度。</p>
+                            <p class="text-gray-700 mt-2">0 ≤ ζ ≤ 1，性能波动越小，ζ 越接近1。通过原始性能数据与平滑数据的差异评估。</p>
                         </div>
-                        <div class="grid-item">
+                        <div class="col-span-2 grid-item">
                             <h4 class="mb-2">τ：归一化恢复时间因子</h4>
                             <p class="text-gray-700">量化系统从干扰中恢复至稳态的时间效率：</p>
                             <div class="math-block mt-2">
@@ -911,12 +973,12 @@
                 
                 <div class="content-card">
                     <h3 class="text-xl mb-4">总韧性</h3>
-                    <div class="math-block">
+                    <div class="math-block mb-4">
                         $$ R_{\text{total}} = \sum_{i=1}^{N_{\text{epochs}}} w_i R_i $$
                     </div>
-                    <div class="grid md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-2 gap-4">
                         <div class="grid-item">
-                            <h4 class="mb-2">参数说明</h4>
+                            <h4 class="mb-3 font-semibold">参数说明</h4>
                             <ul class="space-y-2 text-gray-700">
                                 <li><strong>$N_{\text{epochs}}$</strong>: 干扰事件总时间段数，每个epoch包含完整的干扰-恢复过程</li>
                                 <li><strong>$w_i$</strong>: 基于EWMA的权重系数，反映不同时期干扰的重要性</li>
@@ -924,34 +986,44 @@
                             </ul>
                         </div>
                         <div class="flex justify-center items-center">
-                            <img src="assets/12.png" alt="Total Resilience" class="w-3/4 rounded-lg">
+                            <img src="assets/12.png" alt="Total Resilience" class="w-full rounded-lg">
                         </div>
                     </div>
                 </div>
 
                 <div class="content-card">
                     <h3 class="text-xl mb-4">权重计算</h3>
-                    <div class="math-block">
+                    <div class="math-block mb-6">
                         $$ w_i = \frac{\alpha(1-\alpha)^{N_{\text{epochs}}-i}}{\sum_{j=1}^{N_{\text{epochs}}} \alpha(1-\alpha)^{N_{\text{epochs}}-j}} = \frac{(1-\alpha)^{N_{\text{epochs}}-i}}{\sum_{j=1}^{N_{\text{epochs}}} (1-\alpha)^{N_{\text{epochs}}-j}} $$
                     </div>
-                    <div class="grid md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-2 gap-6">
                         <div class="grid-item">
-                            <h4 class="mb-2">指数衰减机制</h4>
-                            <p class="text-gray-700">公式中$(1-\alpha)^{N_{\text{epochs}}-i}$是权重的核心衰减项，体现时间敏感性：</p>
-                            <ul class="space-y-2 text-gray-700 mt-2">
+                            <h4 class="mb-3 font-semibold">指数衰减机制</h4>
+                            <p class="text-gray-700 mb-3">公式中$(1-\alpha)^{N_{\text{epochs}}-i}$是权重的核心衰减项，体现时间敏感性：</p>
+                            <ul class="space-y-2 text-gray-700">
                                 <li>当$i = N_{\text{epochs}}$（最后一个epoch），指数为0，权重为$(1-\alpha)^0 = 1$（基准值）</li>
                                 <li>当$i = N_{\text{epochs}}-1$，权重为$(1-\alpha)^1$，是最后一个epoch权重的$(1-\alpha)$倍</li>
                                 <li>第1个epoch的权重为$(1-\alpha)^{N_{\text{epochs}}-1}$，随$N_{\text{epochs}}$增加呈指数级衰减</li>
                             </ul>
-                            <p class="text-gray-700 mt-2">示例：若$\alpha = 0.5$，$N_{\text{epochs}} = 3$，则$w_1 : w_2 : w_3 = 1 : 2 : 4$，即近期epoch权重是早期的4倍。</p>
+                            <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                                <p class="text-blue-700 text-sm"><strong>示例：</strong>若$\alpha = 0.5$，$N_{\text{epochs}} = 3$，则$w_1 : w_2 : w_3 = 1 : 2 : 4$，即近期epoch权重是早期的4倍。</p>
+                            </div>
                         </div>
                         <div class="grid-item">
-                            <h4 class="mb-2">平滑因子α的调节</h4>
-                            <p class="text-gray-700">α直接控制权重衰减速度，决定指标对"最新干扰"的敏感程度：</p>
-                            <ul class="space-y-2 text-gray-700 mt-2">
-                                <li><strong>α→1</strong>：权重快速衰减，仅最新干扰主导指标（适用于高频变化系统，如实时通信网络）</li>
-                                <li><strong>α→0</strong>：权重趋于均匀分布，指标反映长期平均韧性（适用于稳态系统，如传统电力网络）</li>
-                            </ul>
+                            <h4 class="mb-3 font-semibold">平滑因子α的调节</h4>
+                            <p class="text-gray-700 mb-3">α直接控制权重衰减速度，决定指标对"最新干扰"的敏感程度：</p>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-red-50 rounded-lg border-l-4 border-red-400">
+                                    <h5 class="font-semibold text-red-700 mb-2">α→1（高敏感性）</h5>
+                                    <p class="text-red-600 text-sm">权重快速衰减，仅最新干扰主导指标</p>
+                                    <p class="text-red-600 text-sm">适用于高频变化系统，如实时通信网络</p>
+                                </div>
+                                <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-400">
+                                    <h5 class="font-semibold text-green-700 mb-2">α→0（低敏感性）</h5>
+                                    <p class="text-green-600 text-sm">权重趋于均匀分布，指标反映长期平均韧性</p>
+                                    <p class="text-green-600 text-sm">适用于稳态系统，如传统电力网络</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -980,17 +1052,17 @@
                     <div class="math-block mb-4">
                         $$ F_{\text{agili}} = \langle F_{\text{robus}}, F_{\text{adapt}}, F_{\text{respo}} \rangle $$
                     </div>
-                    <div class="grid md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-3 gap-6">
                         <div class="grid-item">
-                            <h4 class="mb-2">鲁棒性 (Robustness)</h4>
+                            <h4 class="mb-2 font-semibold">鲁棒性 (Robustness)</h4>
                             <p class="text-gray-700">强调系统在压力或干扰下的稳定性与抗干扰性，确保核心功能的持续运行。通过损伤率和损失持续时间来量化。</p>
                         </div>
                         <div class="grid-item">
-                            <h4 class="mb-2">恢复力 (Recoverability)</h4>
+                            <h4 class="mb-2 font-semibold">恢复力 (Recoverability)</h4>
                             <p class="text-gray-700">系统从破坏、中断或灾难环境中改变并恢复的能力，体现自愈特性。通过恢复率和恢复时间率来衡量。</p>
                         </div>
                         <div class="grid-item">
-                            <h4 class="mb-2">响应性 (Responsiveness)</h4>
+                            <h4 class="mb-2 font-semibold">响应性 (Responsiveness)</h4>
                             <p class="text-gray-700">识别变化的任务和环境并快速做出反应的能力，反映适应性。主要通过响应持续时间比来评估。</p>
                         </div>
                     </div>
@@ -998,12 +1070,12 @@
                 
                 <div class="content-card">
                     <h3 class="text-xl mb-4">时间参数定义</h3>
-                    <div class="flex justify-center mb-6">
-                        <img src="assets/13.png" alt="Parameter Indicators" class="w-4/5">
+                    <div class="flex justify-center mb-4">
+                        <img src="assets/13.png" alt="Parameter Indicators" class="w-3/5">
                     </div>
-                    <div class="grid md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-6">
                         <div class="grid-item">
-                            <h4 class="mb-2">关键时间点</h4>
+                            <h4 class="mb-2 font-semibold">关键时间点</h4>
                             <ul class="list-disc list-inside text-gray-700">
                                 <li><strong>$t_s$</strong>：系统开始受到干扰的时间点</li>
                                 <li><strong>$t_a$</strong>：系统性能达到最低点的时间点</li>
@@ -1012,7 +1084,7 @@
                             </ul>
                         </div>
                         <div class="grid-item">
-                            <h4 class="mb-2">性能变化</h4>
+                            <h4 class="mb-2 font-semibold">性能变化</h4>
                             <ul class="list-disc list-inside text-gray-700">
                                 <li><strong>$X(t_s)$</strong>：初始性能水平</li>
                                 <li><strong>$X(t_a)$</strong>：最低性能水平</li>
@@ -1039,85 +1111,93 @@
                     </a>
                 </div>
 
+                <!-- 上半部分：图片和总体韧性评估 -->
                 <div class="content-card mb-6">
-                    <h3 class="text-xl mb-4">时间参数定义</h3>
-                    <div class="flex justify-center mb-6">
-                        <img src="assets/13.png" alt="Parameter Indicators" class="w-4/5">
+                    <div class="grid grid-cols-10 gap-6">
+                        <div class="col-span-7 flex justify-center">
+                            <img src="assets/13.png" alt="Parameter Indicators" class="w-full rounded-lg shadow-lg">
+                        </div>
+                        <div class="col-span-3 flex items-center">
+                            <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-xl border-2 border-purple-300 w-full">
+                                <h4 class="text-lg mb-3 text-center text-purple-600 font-semibold">总体韧性评估</h4>
+                                <div class="math-block mb-3 text-center">
+                                    $$ F_{\text{agili}} = F_{\text{robus}} \cdot F_{\text{adapt}} \cdot F_{\text{respo}} $$
+                                </div>
+                                <p class="text-gray-700 text-center">
+                                    通过三个维度的乘积来综合评估系统的整体韧性水平
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-gray-700">上图展示了韧性评估中各个关键时间参数的定义和关系，包括干扰开始时间($t_s$)、性能最低点时间($t_a$)、恢复开始时间($t_r$)和恢复结束时间($t_f$)，这些参数是计算各项韧性指标的基础。</p>
                 </div>
                 
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="content-card">
-                        <h3 class="text-xl mb-4">鲁棒性度量 ($ F_{\text{robus}} $)</h3>
-                        <div class="math-block mb-4">
-                            $$ F_{\text{robus}} = f\left(\frac{SP_{\text{robus}}^{\text{aft}}}{SP_{\text{robus}}^{\text{bef}}}, DV\right) = \frac{1}{DR \cdot DV} $$
+                <!-- 中部：三个韧性度量指标 -->
+                <div class="grid grid-cols-3 gap-6 mb-6">
+                    <!-- 鲁棒性度量 -->
+                    <div class="content-card border-l-4 border-red-400">
+                        <h3 class="text-xl mb-4 text-red-600">鲁棒性度量</h3>
+                        <div class="math-block mb-4 text-center">
+                            $$ F_{\text{robus}} = \frac{1}{DR \cdot DV} $$
                         </div>
                         <div class="space-y-4">
-                            <div>
-                                <h4 class="mb-2">损伤率 (DR)</h4>
+                            <div class="bg-red-50 p-3 rounded-lg">
+                                <h4 class="mb-2 font-semibold text-red-700">损伤率 (DR)</h4>
                                 <div class="math-block mb-2">
                                     $$ DR = \frac{X(t_s) - X(t_a)}{X(t_s)} $$
                                 </div>
-                                <p class="text-gray-700">表示系统在干扰下性能下降的程度，DR越小表示系统抗干扰能力越强。</p>
+                                <p class="text-gray-700 text-sm">表示系统在干扰下性能下降的程度</p>
                             </div>
-                            <div>
-                                <h4 class="mb-2">损失持续时间比 (DV)</h4>
+                            <div class="bg-red-50 p-3 rounded-lg">
+                                <h4 class="mb-2 font-semibold text-red-700">损失持续时间比 (DV)</h4>
                                 <div class="math-block mb-2">
                                     $$ DV = \frac{t_a - t_s}{t_f - t_s} $$
                                 </div>
-                                <p class="text-gray-700">反映系统从开始受到干扰到达到最低性能点所需时间占总恢复周期的比例。</p>
+                                <p class="text-gray-700 text-sm">反映系统从开始受到干扰到达到最低性能点所需时间占总恢复周期的比例</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="content-card">
-                        <h3 class="text-xl mb-4">恢复力度量 ($ F_{\text{adapt}} $)</h3>
-                        <div class="math-block mb-4">
-                            $$ F_{\text{adapt}} = g\left(\frac{SP_{\text{adapt}}^{\text{aft}}}{SP_{\text{adapt}}^{\text{bef}}}, RV\right) = \frac{RR}{RV} $$
+                    <!-- 恢复力度量 -->
+                    <div class="content-card border-l-4 border-green-400">
+                        <h3 class="text-xl mb-4 text-green-600">恢复力度量</h3>
+                        <div class="math-block mb-4 text-center">
+                            $$ F_{\text{adapt}} = \frac{RR}{RV} $$
                         </div>
                         <div class="space-y-4">
-                            <div>
-                                <h4 class="mb-2">恢复率 (RR)</h4>
+                            <div class="bg-green-50 p-3 rounded-lg">
+                                <h4 class="mb-2 font-semibold text-green-700">恢复率 (RR)</h4>
                                 <div class="math-block mb-2">
                                     $$ RR = \frac{X(t_f) - X(t_r)}{X(t_s)} $$
                                 </div>
-                                <p class="text-gray-700">表示系统恢复能力的大小，RR越大表示系统恢复程度越好。</p>
+                                <p class="text-gray-700 text-sm">表示系统恢复能力的大小</p>
                             </div>
-                            <div>
-                                <h4 class="mb-2">恢复时间率 (RV)</h4>
+                            <div class="bg-green-50 p-3 rounded-lg">
+                                <h4 class="mb-2 font-semibold text-green-700">恢复时间率 (RV)</h4>
                                 <div class="math-block mb-2">
                                     $$ RV = \frac{t_f - t_r}{t_f - t_s} $$
                                 </div>
-                                <p class="text-gray-700">反映系统恢复过程所需时间占总恢复周期的比例。</p>
+                                <p class="text-gray-700 text-sm">反映系统恢复过程所需时间占总恢复周期的比例</p>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="grid md:grid-cols-2 gap-6 mt-6">
-                    <div class="content-card">
-                        <h3 class="text-xl mb-4">响应性度量 ($ F_{\text{respo}} $)</h3>
-                        <div class="math-block mb-4">
-                            $$ F_{\text{respo}} = h(AV) = \frac{1}{AV} $$
+                    <!-- 响应性度量 -->
+                    <div class="content-card border-l-4 border-blue-400">
+                        <h3 class="text-xl mb-4 text-blue-600">响应性度量</h3>
+                        <div class="math-block mb-4 text-center">
+                            $$ F_{\text{respo}} = \frac{1}{AV} $$
                         </div>
-                        <div>
-                            <h4 class="mb-2">响应持续时间比 (AV)</h4>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <h4 class="mb-2 font-semibold text-blue-700">响应持续时间比 (AV)</h4>
                             <div class="math-block mb-2">
                                 $$ AV = \frac{t_r - t_a}{t_f - t_s} $$
                             </div>
-                            <p class="text-gray-700">反映系统从性能最低点到开始恢复所需时间占总恢复周期的比例。AV越小表示系统响应速度越快。</p>
+                            <p class="text-gray-700 text-sm">反映系统从性能最低点到开始恢复所需时间</p>
                         </div>
-                    </div>
-
-                    <div class="content-card">
-                        <h3 class="text-xl mb-4">总体韧性评估 ($ F_{\text{agili}} $)</h3>
-                        <div class="math-block mb-4">
-                            $$ F_{\text{agili}} = F_{\text{robus}} \cdot F_{\text{adapt}} \cdot F_{\text{respo}} $$
-                        </div>
-                        <p class="text-gray-700">通过三个维度的乘积来综合评估系统的整体韧性水平，体现了系统韧性的整体性和各维度的相互依赖关系。每个维度都是系统韧性不可或缺的组成部分，共同决定了系统的整体韧性表现。</p>
                     </div>
                 </div>
+                
+
             </div>
         </section>
     </div>
@@ -1303,4 +1383,5 @@
         });
     </script>
 </body>
+</html> 
 </html> 
